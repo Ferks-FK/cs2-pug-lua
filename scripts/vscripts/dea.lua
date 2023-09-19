@@ -1,6 +1,8 @@
 --SHITTY PUG PLUGIN BY DEAFPS
 -- HC_ functions by NickFox007
 
+require "whitelist"
+
 roundStarted = false
 
 SendToServerConsole('alias "startpug" "sv_cheats 1; script_reload_code startpug; sv_cheats 0"')
@@ -8,12 +10,6 @@ SendToServerConsole('alias "scramble" "sv_cheats 1; script_reload_code scramblet
 SendToServerConsole('alias "restartpug" "sv_cheats 1; script_reload_code restartpug; sv_cheats 0"')
 SendToServerConsole('alias "rewarmup" "sv_cheats 1; script_reload_code rewarmup; sv_cheats 0"')
 
-
-local allowedPlayers = {
-	--pug players here:
-	"[U:1:00000000]", --example
-	"[U:1:00000000]", --example
-}
 
 local adminPlayers = {
 	--admins/constantly whitelisted
