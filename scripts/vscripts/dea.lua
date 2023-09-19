@@ -14,7 +14,7 @@ local allowedPlayers = {
 	"[U:1:55900622]", --tamas
 	--additional pug players here:
 	"[U:1:00000000]", --example
-  "[U:1:00000000]", --example
+  	"[U:1:00000000]", --example
 }
 
 function HC_ReplaceColorCodes(text)
