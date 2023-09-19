@@ -8,3 +8,4 @@ unzip into your servers csgo folder and add 'exec pugplugin' to your server game
 - startpug
 - restartpug
 - scramble
+- rewarmup
