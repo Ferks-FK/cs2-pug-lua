@@ -11,3 +11,5 @@ to whitelist players add their SteamID3 to the allowedPlayers table in whitelist
 - restartpug
 - scramble
 - rewarmup
+
+## this plugin requires the unlocked LUA VScript.dll
