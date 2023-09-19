@@ -1,3 +1,6 @@
+--SHITTY PUG PLUGIN BY DEAFPS
+-- HC_ functions by NickFox007
+
 roundStarted = false
 
 SendToServerConsole('alias "startpug" "sv_cheats 1; script_reload_code startpug; sv_cheats 0"')
