@@ -69,21 +69,6 @@ function tableContains(table, value)
     return false
 end
 
-function ConvarListener(event)
-	
-	if event.cvarname == startpug and event.cvarvalue == 1 then
-		StartPug()
-	end
-	
-	if event.cvarname == restartpug and event.cvarvalue == 1 then
-		RestartPug()
-	end
-	
-	if event.cvarname == scramble and event.cvarvalue == 1 then
-		ScrambleTeams()
-	end
-end
-
 function StartWarmup()
 	SendToServerConsole("bot_kick")
 	SendToServerConsole("mp_warmuptime 234124235")
