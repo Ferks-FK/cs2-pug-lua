@@ -6,18 +6,22 @@ roundStarted = false
 SendToServerConsole('alias "startpug" "sv_cheats 1; script_reload_code startpug; sv_cheats 0"')
 SendToServerConsole('alias "scramble" "sv_cheats 1; script_reload_code scrambleteams; sv_cheats 0"')
 SendToServerConsole('alias "restartpug" "sv_cheats 1; script_reload_code restartpug; sv_cheats 0"')
+SendToServerConsole('alias "rewarmup" "sv_cheats 1; script_reload_code rewarmup; sv_cheats 0"')
 
 
 local allowedPlayers = {
+	--pug players here:
+	"[U:1:00000000]", --example
+	"[U:1:00000000]", --example
+}
+
+local adminPlayers = {
 	--admins/constantly whitelisted
 	"[U:1:146535711]", --dea
 	"[U:1:214857343]", --mezel
 	"[U:1:83116821]", --malek
 	"[U:1:166331469]", --kuba
 	"[U:1:55900622]", --tamas
-	--additional pug players here:
-	"[U:1:00000000]", --example
-  	"[U:1:00000000]", --example
 }
 
 function HC_ReplaceColorCodes(text)
@@ -48,11 +52,11 @@ function checkWL(event)
     local steamId = tostring(event.networkid)
 	local username = tostring(event.name)
 
-    if tableContains(allowedPlayers, steamId) then
+    if tableContains(allowedPlayers, steamId) or tableContains(adminPlayers, steamId) then
         print("[Whitelist] " .. username .. " is allowed on this server")
     else
-        print("[Whitelist] " .. username .. " not on whitelist, kicking...")
-		SendToServerConsole("kickid " .. event.userid .. " You have been kicked from this server!")
+	print("[Whitelist] " .. username .. " not on whitelist, kicking...")
+	SendToServerConsole("kickid " .. event.userid .. " You have been kicked from this server!")
     end  
 end
 
@@ -83,6 +87,12 @@ end
 function StartWarmup()
 	SendToServerConsole("bot_kick")
 	SendToServerConsole("mp_warmuptime 234124235")
+end
+
+function RestartWarmup()
+	SendToServerConsole("mp_warmup_start")
+	HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Restarting Warmup...")
+	roundStarted = false
 end
 
 function StartPug()
