@@ -1,6 +1,9 @@
 --SHITTY PUG PLUGIN BY DEAFPS
 -- HC_ functions by NickFox007
 
+--SHITTY PUG PLUGIN BY DEAFPS
+-- HC_ functions by NickFox007
+
 require "whitelist"
 require "pug_cfg"
 
@@ -8,7 +11,7 @@ roundStarted = false
 
 local adminPlayers = {
 	--admins/constantly whitelisted
-	"[U:1:146535711]", --dea
+	--"[U:1:146535711]", --dea
 	"[U:1:214857343]", --mezel
 	"[U:1:83116821]", --malek
 	"[U:1:166331469]", --kuba
@@ -43,11 +46,11 @@ function checkWL(event)
     local steamId = tostring(event.networkid)
 	local username = tostring(event.name)
 
-    if tableContains(whitelistedPlayers, steamId) or tableContains(adminPlayers, steamId) or (enableWhitelist == false) then
+    if tableContains(allowedPlayers, steamId) or tableContains(adminPlayers, steamId) then
         print("[Whitelist] " .. username .. " is allowed on this server")
     else
-	print("[Whitelist] " .. username .. " not on whitelist, kicking...")
-	SendToServerConsole("kickid " .. event.userid .. " You have been kicked from this server!")
+		print("[Whitelist] " .. username .. " not on whitelist, kicking...")
+		SendToServerConsole("kickid " .. event.userid .. " You have been kicked from this server!")
     end  
 end
 
@@ -95,7 +98,6 @@ end
 
 
 ListenToGameEvent("player_footstep", PrintWaitingforPlayers, nil)
-ListenToGameEvent("player_connect", checkWL, nil)
 
 Convars:RegisterCommand( "startpug", StartPug, "starts the pug", FCVAR_RELEASE )
 Convars:RegisterCommand( "scramble", ScrambleTeams, "scrambles the teams randomly", FCVAR_RELEASE )
@@ -103,5 +105,13 @@ Convars:RegisterCommand( "restartpug", RestartPug, "restarts the pug", FCVAR_REL
 Convars:RegisterCommand( "rewarmup", RestartWarmup, "restarts the warmup", FCVAR_RELEASE )
 
 StartWarmup()
+
+function Whitelist()
+	if enableWhitelist then
+		ListenToGameEvent("player_connect", checkWL, nil)
+	end
+end
+
+Whitelist()
 
 print("[DEAFPS PUG] Plugin loaded!")
