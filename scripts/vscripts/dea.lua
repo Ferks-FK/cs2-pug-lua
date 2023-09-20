@@ -2,14 +2,9 @@
 -- HC_ functions by NickFox007
 
 require "whitelist"
+require "pug_cfg"
 
 roundStarted = false
-
-SendToServerConsole('alias "startpug" "sv_cheats 1; script_reload_code startpug; sv_cheats 0"')
-SendToServerConsole('alias "scramble" "sv_cheats 1; script_reload_code scrambleteams; sv_cheats 0"')
-SendToServerConsole('alias "restartpug" "sv_cheats 1; script_reload_code restartpug; sv_cheats 0"')
-SendToServerConsole('alias "rewarmup" "sv_cheats 1; script_reload_code rewarmup; sv_cheats 0"')
-
 
 local adminPlayers = {
 	--admins/constantly whitelisted
@@ -41,14 +36,14 @@ function HC_ReplaceColorCodes(text)
 end
 
 function HC_PrintChatAll(text)		
-	ScriptPrintMessageChatAll(" " .. HC_ReplaceColorCodes(text))
+	ScriptPrintMessageChatAll(" " .. HC_ReplaceColorCodes(chatPrefix .. text))
 end
 
 function checkWL(event)
     local steamId = tostring(event.networkid)
 	local username = tostring(event.name)
 
-    if tableContains(allowedPlayers, steamId) or tableContains(adminPlayers, steamId) then
+    if tableContains(whitelistedPlayers, steamId) or tableContains(adminPlayers, steamId) or (enableWhitelist == false) then
         print("[Whitelist] " .. username .. " is allowed on this server")
     else
 	print("[Whitelist] " .. username .. " not on whitelist, kicking...")
@@ -67,41 +62,46 @@ end
 
 function StartWarmup()
 	SendToServerConsole("bot_kick")
-	SendToServerConsole("mp_warmuptime 234124235")
+	SendToServerConsole("mp_warmuptime " .. warmupTime)
 end
 
 function RestartWarmup()
 	SendToServerConsole("mp_warmup_start")
-	HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Restarting Warmup...")
-	HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Waiting for players...")
+	HC_PrintChatAll("{green} Restarting Warmup...")
 	roundStarted = false
 end
 
 function StartPug()
 	SendToServerConsole("mp_warmup_end")
-	HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Starting Pug...")
+	HC_PrintChatAll("{green} Starting Pug...")
 	roundStarted = true
 end
 
 function ScrambleTeams()
     SendToServerConsole("mp_scrambleteams")
-    HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Scrambling Teams...")
+    HC_PrintChatAll("{green} Scrambling Teams...")
 end
 
 function RestartPug()
     SendToServerConsole("mp_restartgame 1")
-    HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Restarting Pug...")
+    HC_PrintChatAll("{green} Restarting Pug...")
 end
 
 function PrintWaitingforPlayers()
     if not roundStarted then
-		HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Waiting for players...")
+		HC_PrintChatAll("{green} Waiting for players")
 	end
 end
 
 
 ListenToGameEvent("player_footstep", PrintWaitingforPlayers, nil)
 ListenToGameEvent("player_connect", checkWL, nil)
+
+Convars:RegisterCommand( "startpug", StartPug, "starts the pug", FCVAR_RELEASE )
+Convars:RegisterCommand( "scramble", ScrambleTeams, "scrambles the teams randomly", FCVAR_RELEASE )
+Convars:RegisterCommand( "restartpug", RestartPug, "restarts the pug", FCVAR_RELEASE )
+Convars:RegisterCommand( "rewarmup", RestartWarmup, "restarts the warmup", FCVAR_RELEASE )
+
 StartWarmup()
 
-print("[DEAFPS Pug Plugin] Plugin loaded!")
+print("[DEAFPS PUG] Plugin loaded!")
