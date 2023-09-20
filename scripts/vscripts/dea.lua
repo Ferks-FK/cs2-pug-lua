@@ -11,7 +11,7 @@ roundStarted = false
 
 local adminPlayers = {
 	--admins/constantly whitelisted
-	--"[U:1:146535711]", --dea
+	"[U:1:146535711]", --dea
 	"[U:1:214857343]", --mezel
 	"[U:1:83116821]", --malek
 	"[U:1:166331469]", --kuba
