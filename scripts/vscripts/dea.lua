@@ -73,6 +73,7 @@ end
 function RestartWarmup()
 	SendToServerConsole("mp_warmup_start")
 	HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Restarting Warmup...")
+	HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Waiting for players...")
 	roundStarted = false
 end
 
@@ -94,7 +95,7 @@ end
 
 function PrintWaitingforPlayers()
     if not roundStarted then
-		HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Waiting for players")
+		HC_PrintChatAll("{red} [DEAFPS Pug Plugin] {green} Waiting for players...")
 	end
 end
 
