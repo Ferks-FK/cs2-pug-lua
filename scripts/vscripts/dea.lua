@@ -1,9 +1,6 @@
 --SHITTY PUG PLUGIN BY DEAFPS
 -- HC_ functions by NickFox007
 
---SHITTY PUG PLUGIN BY DEAFPS
--- HC_ functions by NickFox007
-
 require "whitelist"
 require "pug_cfg"
 
