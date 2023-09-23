@@ -6,7 +6,6 @@ require "whitelist"
 require "pug_cfg"
 
 roundStarted = false
-spawnedPlayers = 0
 
 local adminPlayers = {
 	--admins/constantly whitelisted
