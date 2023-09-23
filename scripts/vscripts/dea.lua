@@ -1,10 +1,12 @@
 --SHITTY PUG PLUGIN BY DEAFPS
 -- HC_ functions by NickFox007
 
+require "libs.timers"
 require "whitelist"
 require "pug_cfg"
 
 roundStarted = false
+spawnedPlayers = 0
 
 local adminPlayers = {
 	--admins/constantly whitelisted
@@ -68,11 +70,25 @@ end
 function RestartWarmup()
 	SendToServerConsole("mp_warmup_start")
 	HC_PrintChatAll("{green} Restarting Warmup...")
+	HC_PrintChatAll("{green} Restarting Warmup...")
+	HC_PrintChatAll("{green} Restarting Warmup...")
+	HC_PrintChatAll("{green} Restarting Warmup...")
+	HC_PrintChatAll("{green} Restarting Warmup...")
+	HC_PrintChatAll("{green} Restarting Warmup...")
+	HC_PrintChatAll("{green} Restarting Warmup...")
+	HC_PrintChatAll("{green} Restarting Warmup...")
 	roundStarted = false
 end
 
 function StartPug()
 	SendToServerConsole("mp_warmup_end")
+	HC_PrintChatAll("{green} Starting Pug...")
+	HC_PrintChatAll("{green} Starting Pug...")
+	HC_PrintChatAll("{green} Starting Pug...")
+	HC_PrintChatAll("{green} Starting Pug...")
+	HC_PrintChatAll("{green} Starting Pug...")
+	HC_PrintChatAll("{green} Starting Pug...")
+	HC_PrintChatAll("{green} Starting Pug...")
 	HC_PrintChatAll("{green} Starting Pug...")
 	roundStarted = true
 end
@@ -80,21 +96,44 @@ end
 function ScrambleTeams()
     SendToServerConsole("mp_scrambleteams")
     HC_PrintChatAll("{green} Scrambling Teams...")
+	HC_PrintChatAll("{green} Scrambling Teams...")
+	HC_PrintChatAll("{green} Scrambling Teams...")
+	HC_PrintChatAll("{green} Scrambling Teams...")
+	HC_PrintChatAll("{green} Scrambling Teams...")
+	HC_PrintChatAll("{green} Scrambling Teams...")
+	HC_PrintChatAll("{green} Scrambling Teams...")
+	HC_PrintChatAll("{green} Scrambling Teams...")
 end
 
 function RestartPug()
     SendToServerConsole("mp_restartgame 1")
     HC_PrintChatAll("{green} Restarting Pug...")
+	HC_PrintChatAll("{green} Restarting Pug...")
+	HC_PrintChatAll("{green} Restarting Pug...")
+	HC_PrintChatAll("{green} Restarting Pug...")
+	HC_PrintChatAll("{green} Restarting Pug...")
+	HC_PrintChatAll("{green} Restarting Pug...")
+	HC_PrintChatAll("{green} Restarting Pug...")
+	HC_PrintChatAll("{green} Restarting Pug...")
 end
 
-function PrintWaitingforPlayers()
-    if not roundStarted then
-		HC_PrintChatAll("{green} Waiting for players")
+
+function PrintWaitingforPlayers(event)
+	
+	if not warmupTimerStarted then
+		warmupTimerStarted = true
+		Timers:CreateTimer("warmup_timer", {
+				callback = function()
+					if not roundStarted then
+						HC_PrintChatAll("{green} Waiting for players")
+					end
+					return 3
+				end,
+		})
 	end
+	
 end
 
-
-ListenToGameEvent("player_footstep", PrintWaitingforPlayers, nil)
 
 Convars:RegisterCommand( "startpug", StartPug, "starts the pug", FCVAR_RELEASE )
 Convars:RegisterCommand( "scramble", ScrambleTeams, "scrambles the teams randomly", FCVAR_RELEASE )
@@ -108,6 +147,8 @@ function Whitelist()
 		ListenToGameEvent("player_connect", checkWL, nil)
 	end
 end
+
+ListenToGameEvent("player_spawn", PrintWaitingforPlayers, nil)
 
 Whitelist()
 
