@@ -91,7 +91,7 @@ function mvmntSettings(setting)
 		currentMvmntSettings = "KZ"
 	end
 	
-	if not setting == "vnl" then
+	if setting == "vnl" then
 		SendToServerConsole("sv_accelerate 5.5")
 		SendToServerConsole("sv_accelerate_use_weapon_speed 1")
 		SendToServerConsole("sv_airaccelerate 12.0")
@@ -125,9 +125,11 @@ function StartWarmup()
 	SendToServerConsole("bot_kick")
 	SendToServerConsole("mp_warmuptime " .. warmupTime)
 	
-	if kzsettingsinwarmup then
+	if kzsettingsinwarmup == true then
 		mvmntSettings("kz")
-	else 
+	end
+	
+	if kzsettingsinwarmup == false then
 		mvmntSettings("vnl")
 	end
 	
@@ -144,9 +146,11 @@ function RestartWarmup()
 	HC_PrintChatAll("{green} Restarting Warmup...")
 	HC_PrintChatAll("{green} Restarting Warmup...")
 	
-	if kzsettingsinwarmup == "kz" then
+	if kzsettingsinwarmup == true then
 		mvmntSettings("kz")
-	else 
+	end
+	
+	if kzsettingsinwarmup == false then
 		mvmntSettings("vnl")
 	end
 	
@@ -154,23 +158,46 @@ function RestartWarmup()
 end
 
 function StartPug()
-	SendToServerConsole("mp_warmup_end")
-	HC_PrintChatAll("{green} Starting Pug...")
-	HC_PrintChatAll("{green} Starting Pug...")
-	HC_PrintChatAll("{green} Starting Pug...")
-	HC_PrintChatAll("{green} Starting Pug...")
-	HC_PrintChatAll("{green} Starting Pug...")
-	HC_PrintChatAll("{green} Starting Pug...")
-	HC_PrintChatAll("{green} Starting Pug...")
-	HC_PrintChatAll("{green} Starting Pug...")
+	if roundStarted == false then
 	
-	if kzsettings == "kz" then
-		mvmntSettings("kz")
-	else 
-		mvmntSettings("vnl")
+		seconds = 10
+		roundStarted = true
+		
+		Timers:CreateTimer("startingpug_timer", {
+						callback = function()
+							HC_PrintChatAll("{green} Starting Pug in: " .. seconds)
+							seconds = seconds - 1
+							if seconds == 0 then
+								Timers:RemoveTimer(startingpug_timer)
+							end
+							return 1.0
+						end,
+		})
+		
+		Timers:CreateTimer({
+		useGameTime = false,
+		endTime = 10, -- when this timer should first execute, you can omit this if you want it to run first on the next frame
+		callback = function()
+			SendToServerConsole("mp_warmup_end")
+			HC_PrintChatAll("{green} Starting Pug...")
+			HC_PrintChatAll("{green} Starting Pug...")
+			HC_PrintChatAll("{green} Starting Pug...")
+			HC_PrintChatAll("{green} Starting Pug...")
+			HC_PrintChatAll("{green} Starting Pug...")
+			HC_PrintChatAll("{green} Starting Pug...")
+			HC_PrintChatAll("{green} Starting Pug...")
+			
+		
+			if kzsettings == true then
+				mvmntSettings("kz")
+			else 
+				mvmntSettings("vnl")
+			end
+			
+			HC_PrintChatAll("{green} Movement Settings: [" .. currentMvmntSettings .. "]")
+		end
+		})
 	end
-	
-	roundStarted = true
 end
 
 function ScrambleTeams()
@@ -194,7 +221,7 @@ function RestartPug()
 	HC_PrintChatAll("{green} Restarting Pug...")
 	HC_PrintChatAll("{green} Restarting Pug...")
 	HC_PrintChatAll("{green} Restarting Pug...")
-	HC_PrintChatAll("{green} Restarting Pug...")
+	HC_PrintChatAll("{green} Movement Settings: [" .. currentMvmntSettings .. "]")
 end
 
 
@@ -202,14 +229,16 @@ function PrintWaitingforPlayers(event)
 	
 	if not warmupTimerStarted then
 		warmupTimerStarted = true
-		Timers:CreateTimer("warmup_timer", {
-				callback = function()
-					if not roundStarted then
-						HC_PrintChatAll("{green} Waiting for players")
-					end
-					return 3
-				end,
-		})
+		if not Timers:TimerExists(warmup_timer) then
+			Timers:CreateTimer("warmup_timer", {
+					callback = function()
+						if not roundStarted then
+							HC_PrintChatAll("{green} Waiting for players")
+						end
+						return 3
+					end,
+			})
+		end
 	end
 	
 end
