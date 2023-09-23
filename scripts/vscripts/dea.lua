@@ -96,7 +96,7 @@ function mvmntSettings(setting)
 		SendToServerConsole("sv_accelerate_use_weapon_speed 1")
 		SendToServerConsole("sv_airaccelerate 12.0")
 		SendToServerConsole("sv_air_max_wishspeed 30.0")
-		SendToServerConsole("sv_enablebunnyhopping 1")
+		SendToServerConsole("sv_enablebunnyhopping 0")
 		SendToServerConsole("sv_friction 5.2")
 		SendToServerConsole("sv_gravity 800.0")
 		SendToServerConsole("sv_jump_impulse 301.993377")
@@ -235,7 +235,7 @@ function PrintWaitingforPlayers(event)
 						if not roundStarted then
 							HC_PrintChatAll("{green} Waiting for players")
 						end
-						return 3
+						return 2
 					end,
 			})
 		end
