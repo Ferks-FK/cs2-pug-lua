@@ -17,6 +17,8 @@ local adminPlayers = {
 	"[U:1:55900622]", --tamas
 }
 
+local activeAdmins = {}
+
 function HC_ReplaceColorCodes(text)
 	text = string.gsub(text, "{white}", "\x01")
 	text = string.gsub(text, "{darkred}", "\x02")
@@ -41,18 +43,6 @@ function HC_PrintChatAll(text)
 	ScriptPrintMessageChatAll(" " .. HC_ReplaceColorCodes(chatPrefix .. text))
 end
 
-function checkWL(event)
-    local steamId = tostring(event.networkid)
-	local username = tostring(event.name)
-
-    if tableContains(allowedPlayers, steamId) or tableContains(adminPlayers, steamId) then
-        print("[Whitelist] " .. username .. " is allowed on this server")
-    else
-		print("[Whitelist] " .. username .. " not on whitelist, kicking...")
-		SendToServerConsole("kickid " .. event.userid .. " You have been kicked from this server!")
-    end  
-end
-
 function tableContains(table, value)
     for _, v in pairs(table) do
         if v == value then
@@ -60,6 +50,23 @@ function tableContains(table, value)
         end
     end
     return false
+end
+
+
+function checkWL(event)
+    local steamId = tostring(event.networkid)
+	local username = tostring(event.name)
+
+	if tableContains(adminPlayers, steamId) then
+		table.insert(adminIDs, { ["Name"] = event.name, ["UserID"] = event.userid, ["SteamID3"] = event.networkid })
+	end
+
+	if tableContains(allowedPlayers, steamId) or tableContains(adminPlayers, steamId) then
+		print("[Whitelist] " .. username .. " is allowed on this server")
+	else
+		print("[Whitelist] " .. username .. " not on whitelist, kicking...")
+		SendToServerConsole("kickid " .. event.userid .. " You have been kicked from this server!")
+	end  
 end
 
 function mvmntSettings(setting)
@@ -122,48 +129,58 @@ function mvmntSettings(setting)
 end
 
 function StartWarmup()
-	SendToServerConsole("bot_kick")
 	
-	if warmupEndless == true then
-		SendToServerConsole("mp_warmup_pausetimer 1")
+	if tableContains(activeAdmins, user) then
+	
+		SendToServerConsole("bot_kick")
+		
+		if warmupEndless == true then
+			SendToServerConsole("mp_warmup_pausetimer 1")
+		end
+		
+		SendToServerConsole("mp_warmuptime " .. warmupTime)
+		
+		if kzsettingsinwarmup == true then
+			mvmntSettings("kz")
+		end
+		
+		if kzsettingsinwarmup == false then
+			mvmntSettings("vnl")
+		end
 	end
-	
-	SendToServerConsole("mp_warmuptime " .. warmupTime)
-	
-	if kzsettingsinwarmup == true then
-		mvmntSettings("kz")
-	end
-	
-	if kzsettingsinwarmup == false then
-		mvmntSettings("vnl")
-	end
-	
 end
 
 function RestartWarmup()
-	SendToServerConsole("mp_warmup_start")
-	HC_PrintChatAll("{green} Restarting Warmup...")
-	HC_PrintChatAll("{green} Restarting Warmup...")
-	HC_PrintChatAll("{green} Restarting Warmup...")
-	HC_PrintChatAll("{green} Restarting Warmup...")
-	HC_PrintChatAll("{green} Restarting Warmup...")
-	HC_PrintChatAll("{green} Restarting Warmup...")
-	HC_PrintChatAll("{green} Restarting Warmup...")
-	HC_PrintChatAll("{green} Restarting Warmup...")
+	local user = Convars:GetCommandClient()
 	
-	if kzsettingsinwarmup == true then
-		mvmntSettings("kz")
+	if tableContains(activeAdmins, user) then
+	
+		SendToServerConsole("mp_warmup_start")
+		HC_PrintChatAll("{green} Restarting Warmup...")
+		HC_PrintChatAll("{green} Restarting Warmup...")
+		HC_PrintChatAll("{green} Restarting Warmup...")
+		HC_PrintChatAll("{green} Restarting Warmup...")
+		HC_PrintChatAll("{green} Restarting Warmup...")
+		HC_PrintChatAll("{green} Restarting Warmup...")
+		HC_PrintChatAll("{green} Restarting Warmup...")
+		HC_PrintChatAll("{green} Restarting Warmup...")
+		
+		if kzsettingsinwarmup == true then
+			mvmntSettings("kz")
+		end
+		
+		if kzsettingsinwarmup == false then
+			mvmntSettings("vnl")
+		end
+		
+		roundStarted = false
 	end
-	
-	if kzsettingsinwarmup == false then
-		mvmntSettings("vnl")
-	end
-	
-	roundStarted = false
 end
 
 function StartPug()
-	if roundStarted == false then
+	local user = Convars:GetCommandClient()
+	
+	if (roundStarted == false) and tableContains(activeAdmins, user) then
 	
 		seconds = 10
 		roundStarted = true
@@ -206,27 +223,31 @@ function StartPug()
 end
 
 function ScrambleTeams()
-    SendToServerConsole("mp_scrambleteams")
-    HC_PrintChatAll("{green} Scrambling Teams...")
-	HC_PrintChatAll("{green} Scrambling Teams...")
-	HC_PrintChatAll("{green} Scrambling Teams...")
-	HC_PrintChatAll("{green} Scrambling Teams...")
-	HC_PrintChatAll("{green} Scrambling Teams...")
-	HC_PrintChatAll("{green} Scrambling Teams...")
-	HC_PrintChatAll("{green} Scrambling Teams...")
-	HC_PrintChatAll("{green} Scrambling Teams...")
+	if tableContains(activeAdmins, user) then
+		SendToServerConsole("mp_scrambleteams")
+		HC_PrintChatAll("{green} Scrambling Teams...")
+		HC_PrintChatAll("{green} Scrambling Teams...")
+		HC_PrintChatAll("{green} Scrambling Teams...")
+		HC_PrintChatAll("{green} Scrambling Teams...")
+		HC_PrintChatAll("{green} Scrambling Teams...")
+		HC_PrintChatAll("{green} Scrambling Teams...")
+		HC_PrintChatAll("{green} Scrambling Teams...")
+		HC_PrintChatAll("{green} Scrambling Teams...")
+	end
 end
 
 function RestartPug()
-    SendToServerConsole("mp_restartgame 1")
-    HC_PrintChatAll("{green} Restarting Pug...")
-	HC_PrintChatAll("{green} Restarting Pug...")
-	HC_PrintChatAll("{green} Restarting Pug...")
-	HC_PrintChatAll("{green} Restarting Pug...")
-	HC_PrintChatAll("{green} Restarting Pug...")
-	HC_PrintChatAll("{green} Restarting Pug...")
-	HC_PrintChatAll("{green} Restarting Pug...")
-	HC_PrintChatAll("{green} Movement Settings: [" .. currentMvmntSettings .. "]")
+	if tableContains(activeAdmins, user) then
+		SendToServerConsole("mp_restartgame 1")
+		HC_PrintChatAll("{green} Restarting Pug...")
+		HC_PrintChatAll("{green} Restarting Pug...")
+		HC_PrintChatAll("{green} Restarting Pug...")
+		HC_PrintChatAll("{green} Restarting Pug...")
+		HC_PrintChatAll("{green} Restarting Pug...")
+		HC_PrintChatAll("{green} Restarting Pug...")
+		HC_PrintChatAll("{green} Restarting Pug...")
+		HC_PrintChatAll("{green} Movement Settings: [" .. currentMvmntSettings .. "]")
+	end
 end
 
 
@@ -239,7 +260,7 @@ function PrintWaitingforPlayers(event)
 					callback = function()
 						if not roundStarted then		
 							HC_PrintChatAll("{green} Waiting for players")
-							ScriptPrintMessageCenterAll("                     \x07 [DEAFPS PUG]                      \x10 Waiting for players")
+							ScriptPrintMessageCenterAll("[DEAFPS PUG] Waiting for players")
 						end
 						return 2
 					end,
@@ -249,11 +270,31 @@ function PrintWaitingforPlayers(event)
 	
 end
 
+function addAdmin(activeAdmins, admin)
+    for _, existingAdmin in ipairs(activeAdmins) do
+        if existingAdmin == admin then
+            print("admin already logged in")
+            return
+        end
+    end
 
-Convars:RegisterCommand( "startpug", StartPug, "starts the pug", FCVAR_RELEASE )
-Convars:RegisterCommand( "scramble", ScrambleTeams, "scrambles the teams randomly", FCVAR_RELEASE )
-Convars:RegisterCommand( "restartpug", RestartPug, "restarts the pug", FCVAR_RELEASE )
-Convars:RegisterCommand( "rewarmup", RestartWarmup, "restarts the warmup", FCVAR_RELEASE )
+    table.insert(activeAdmins, admin)
+end
+
+Convars:RegisterCommand( "adminlogin" , function (_, pw)
+        local password = tostring (pw) or  30
+        
+	if password == adminPassword then
+		local admin = Convars:GetCommandClient()
+		addAdmin(activeAdmins, admin)
+		print("admin logged in")
+	end
+end, nil , FCVAR_PROTECTED)
+
+Convars:RegisterCommand( "startpug", StartPug, nil, FCVAR_PROTECTED )
+Convars:RegisterCommand( "scramble", ScrambleTeams, nil, FCVAR_PROTECTED )
+Convars:RegisterCommand( "restartpug", RestartPug, nil, FCVAR_PROTECTED )
+Convars:RegisterCommand( "rewarmup", RestartWarmup, nil, FCVAR_PROTECTED )
 
 StartWarmup()
 
