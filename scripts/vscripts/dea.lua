@@ -123,6 +123,11 @@ end
 
 function StartWarmup()
 	SendToServerConsole("bot_kick")
+	
+	if warmupEndless == true then
+		SendToServerConsole("mp_warmup_pausetimer 1")
+	end
+	
 	SendToServerConsole("mp_warmuptime " .. warmupTime)
 	
 	if kzsettingsinwarmup == true then
@@ -232,8 +237,9 @@ function PrintWaitingforPlayers(event)
 		if not Timers:TimerExists(warmup_timer) then
 			Timers:CreateTimer("warmup_timer", {
 					callback = function()
-						if not roundStarted then
+						if not roundStarted then		
 							HC_PrintChatAll("{green} Waiting for players")
+							ScriptPrintMessageCenterAll("                     \x07 [DEAFPS PUG]                      \x10 Waiting for players")
 						end
 						return 2
 					end,
