@@ -5,6 +5,8 @@ unzip into your servers csgo folder and add 'exec pugplugin' to your server game
 
 to whitelist players add their SteamID3 to the allowedPlayers table in whitelist.lua
 
+![alt text](https://i.imgur.com/fLxHLux.jpeg)
+![alt text](https://i.imgur.com/wCO9pHX.png)
 
 ## RCON Commands
 - startpug
