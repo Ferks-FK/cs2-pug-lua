@@ -8,7 +8,7 @@ to whitelist players add their SteamID3 to the allowedPlayers table in whitelist
 ![alt text](https://i.imgur.com/fLxHLux.jpeg)
 ![alt text](https://i.imgur.com/wCO9pHX.png)
 
-## RCON Commands
+## Admin Commands
 - startpug
 - restartpug
 - scramble
