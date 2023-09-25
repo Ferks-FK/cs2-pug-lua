@@ -6,5 +6,3 @@ adminPassword = "123"
 enableWhitelist = true
 kzsettingsinwarmup = true
 kzsettings = false
-
-FCVAR_RELEASE = bit.lshift(1, 19) --yoinked from Source2ZE
