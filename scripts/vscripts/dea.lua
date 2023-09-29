@@ -150,12 +150,17 @@ function StartWarmup()
 	end
 end
 
-function RestartWarmup()
+Convars:RegisterCommand("rewarmup", function()
 	local user = Convars:GetCommandClient()
 	
 	if tableContains(activeAdmins, user) then
 	
 		SendToServerConsole("mp_warmup_start")
+		
+		if warmupEndless == true then
+			SendToServerConsole("mp_warmup_pausetimer 1")
+		end
+		
 		HC_PrintChatAll("{green} Restarting Warmup...")
 		HC_PrintChatAll("{green} Restarting Warmup...")
 		HC_PrintChatAll("{green} Restarting Warmup...")
@@ -175,9 +180,9 @@ function RestartWarmup()
 		
 		roundStarted = false
 	end
-end
+end, nil, 0)
 
-function StartPug()
+Convars:RegisterCommand("startpug", function()
 	local user = Convars:GetCommandClient()
 	
 	if (roundStarted == false) and tableContains(activeAdmins, user) then
@@ -220,9 +225,11 @@ function StartPug()
 		end
 		})
 	end
-end
+end, nil, 0)
 
-function ScrambleTeams()
+Convars:RegisterCommand("scramble", function()
+	local user = Convars:GetCommandClient()
+	
 	if tableContains(activeAdmins, user) then
 		SendToServerConsole("mp_scrambleteams")
 		HC_PrintChatAll("{green} Scrambling Teams...")
@@ -234,9 +241,10 @@ function ScrambleTeams()
 		HC_PrintChatAll("{green} Scrambling Teams...")
 		HC_PrintChatAll("{green} Scrambling Teams...")
 	end
-end
+end, nil, 0)
 
-function RestartPug()
+Convars:RegisterCommand("restartpug", function()
+	local user = Convars:GetCommandClient()
 	if tableContains(activeAdmins, user) then
 		SendToServerConsole("mp_restartgame 1")
 		HC_PrintChatAll("{green} Restarting Pug...")
@@ -248,7 +256,7 @@ function RestartPug()
 		HC_PrintChatAll("{green} Restarting Pug...")
 		HC_PrintChatAll("{green} Movement Settings: [" .. currentMvmntSettings .. "]")
 	end
-end
+end, nil, 0)
 
 
 function PrintWaitingforPlayers(event)
@@ -290,11 +298,6 @@ Convars:RegisterCommand( "adminlogin" , function (_, pw)
 		print("admin logged in")
 	end
 end, nil , FCVAR_PROTECTED)
-
-Convars:RegisterCommand( "startpug", StartPug, nil, FCVAR_PROTECTED )
-Convars:RegisterCommand( "scramble", ScrambleTeams, nil, FCVAR_PROTECTED )
-Convars:RegisterCommand( "restartpug", RestartPug, nil, FCVAR_PROTECTED )
-Convars:RegisterCommand( "rewarmup", RestartWarmup, nil, FCVAR_PROTECTED )
 
 StartWarmup()
 
