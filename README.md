@@ -16,6 +16,6 @@ to whitelist players add their SteamID3 to the allowedPlayers table in whitelist
 - scramble
 - rewarmup
 - changemap de_dust2
-- adminlogin
+- adminlogin pw (set the pw in the pug_cfg file)
 
 ## this plugin requires the unlocked LUA VScript.dll
