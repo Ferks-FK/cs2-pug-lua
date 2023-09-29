@@ -243,9 +243,47 @@ Convars:RegisterCommand("scramble", function()
 	end
 end, nil, 0)
 
+Convars:RegisterCommand("pausepug", function()
+	local user = Convars:GetCommandClient()
+	
+	if tableContains(activeAdmins, user) then
+		SendToServerConsole("mp_pause_match")
+		HC_PrintChatAll("{green} Pausing Pug...")
+		HC_PrintChatAll("{green} Pausing Pug...")
+		HC_PrintChatAll("{green} Pausing Pug...")
+		HC_PrintChatAll("{green} Pausing Pug...")
+		HC_PrintChatAll("{green} Pausing Pug...")
+		HC_PrintChatAll("{green} Pausing Pug...")
+		HC_PrintChatAll("{green} Pausing Pug...")
+		HC_PrintChatAll("{green} Pausing Pug...")
+	end
+end, nil, 0)
+
+Convars:RegisterCommand("unpausepug", function()
+	local user = Convars:GetCommandClient()
+	
+	if tableContains(activeAdmins, user) then
+		SendToServerConsole("mp_unpause_match")
+		HC_PrintChatAll("{green} Unpausing Pug...")
+		HC_PrintChatAll("{green} Unpausing Pug...")
+		HC_PrintChatAll("{green} Unpausing Pug...")
+		HC_PrintChatAll("{green} Unpausing Pug...")
+		HC_PrintChatAll("{green} Unpausing Pug...")
+		HC_PrintChatAll("{green} Unpausing Pug...")
+		HC_PrintChatAll("{green} Unpausing Pug...")
+		HC_PrintChatAll("{green} Unpausing Pug...")
+	end
+end, nil, 0)
+
 Convars:RegisterCommand("restartpug", function()
 	local user = Convars:GetCommandClient()
 	if tableContains(activeAdmins, user) then
+		if kzsettings == true then
+				mvmntSettings("kz")
+			else 
+				mvmntSettings("vnl")
+		end
+		
 		SendToServerConsole("mp_restartgame 1")
 		HC_PrintChatAll("{green} Restarting Pug...")
 		HC_PrintChatAll("{green} Restarting Pug...")
@@ -255,6 +293,36 @@ Convars:RegisterCommand("restartpug", function()
 		HC_PrintChatAll("{green} Restarting Pug...")
 		HC_PrintChatAll("{green} Restarting Pug...")
 		HC_PrintChatAll("{green} Movement Settings: [" .. currentMvmntSettings .. "]")
+	end
+end, nil, 0)
+
+Convars:RegisterCommand("changemap", function (_, map)
+	local mmap = tostring (map) or  30
+	local user = Convars:GetCommandClient()
+	
+	if tableContains(activeAdmins, user) then
+	
+		seconds = 10
+		roundStarted = true
+		Timers:CreateTimer("startingpug_timer", {
+						callback = function()
+							HC_PrintChatAll("{green} Changing Map in: " .. seconds)
+							seconds = seconds - 1
+							if seconds == 0 then
+								Timers:RemoveTimer(startingpug_timer)
+							end
+							return 1.0
+						end,
+		})
+		
+		Timers:CreateTimer({
+		useGameTime = false,
+		endTime = 10, -- when this timer should first execute, you can omit this if you want it to run first on the next frame
+		callback = function()
+			SendToServerConsole("map " .. mmap)
+			
+		end
+		})
 	end
 end, nil, 0)
 
