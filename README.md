@@ -10,9 +10,12 @@ to whitelist players add their SteamID3 to the allowedPlayers table in whitelist
 
 ## Admin Commands
 - startpug
+- pausepug
+- unpausepug
 - restartpug
 - scramble
 - rewarmup
+- changemap de_dust2
 - adminlogin
 
 ## this plugin requires the unlocked LUA VScript.dll
