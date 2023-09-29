@@ -129,24 +129,22 @@ function mvmntSettings(setting)
 end
 
 function StartWarmup()
+	SendToServerConsole("bot_kick")
 	
-	if tableContains(activeAdmins, user) then
+	SendToServerConsole("mp_warmup_start")
 	
-		SendToServerConsole("bot_kick")
-		
-		if warmupEndless == true then
-			SendToServerConsole("mp_warmup_pausetimer 1")
-		end
-		
-		SendToServerConsole("mp_warmuptime " .. warmupTime)
-		
-		if kzsettingsinwarmup == true then
-			mvmntSettings("kz")
-		end
-		
-		if kzsettingsinwarmup == false then
-			mvmntSettings("vnl")
-		end
+	if warmupEndless == true then
+		SendToServerConsole("mp_warmup_pausetimer 1")
+	end
+	
+	SendToServerConsole("mp_warmuptime " .. warmupTime)
+	
+	if kzsettingsinwarmup == true then
+		mvmntSettings("kz")
+	end
+	
+	if kzsettingsinwarmup == false then
+		mvmntSettings("vnl")
 	end
 end
 
@@ -160,6 +158,8 @@ Convars:RegisterCommand("rewarmup", function()
 		if warmupEndless == true then
 			SendToServerConsole("mp_warmup_pausetimer 1")
 		end
+		
+		SendToServerConsole("mp_warmuptime " .. warmupTime)
 		
 		HC_PrintChatAll("{green} Restarting Warmup...")
 		HC_PrintChatAll("{green} Restarting Warmup...")
@@ -206,6 +206,7 @@ Convars:RegisterCommand("startpug", function()
 		endTime = 10, -- when this timer should first execute, you can omit this if you want it to run first on the next frame
 		callback = function()
 			SendToServerConsole("mp_warmup_end")
+			SendToServerConsole("mp_ignore_round_win_conditions 0")
 			HC_PrintChatAll("{green} Starting Pug...")
 			HC_PrintChatAll("{green} Starting Pug...")
 			HC_PrintChatAll("{green} Starting Pug...")
@@ -285,6 +286,7 @@ Convars:RegisterCommand("restartpug", function()
 		end
 		
 		SendToServerConsole("mp_restartgame 1")
+		SendToServerConsole("mp_ignore_round_win_conditions 0")
 		HC_PrintChatAll("{green} Restarting Pug...")
 		HC_PrintChatAll("{green} Restarting Pug...")
 		HC_PrintChatAll("{green} Restarting Pug...")
