@@ -7,3 +7,4 @@ adminPassword = "zyzz"
 enableWhitelist = true
 kzsettingsinwarmup = true
 kzsettings = false
+teamSize = 5
