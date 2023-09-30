@@ -8,3 +8,4 @@ enableWhitelist = true
 kzsettingsinwarmup = true
 kzsettings = false
 teamSize = 5
+votingEnabled = true
