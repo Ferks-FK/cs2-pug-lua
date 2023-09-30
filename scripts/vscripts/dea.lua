@@ -347,8 +347,8 @@ function PrintWaitingforPlayers(event)
 			Timers:CreateTimer("warmup_timer", {
 					callback = function()
 						if not roundStarted then		
-							HC_PrintChatAll("{green} Waiting for players {lightgray}[Players ready: " .. #playersThatVoted .. "/" .. teamSize .. "]")
-							ScriptPrintMessageCenterAll("Waiting for players [Ready: " .. #playersThatVoted .. "/" .. teamSize .. "]     Use Ping to ready up!")
+							HC_PrintChatAll("{green} Waiting for players {lightgray}[Players ready: " .. #playersThatVoted .. "/" .. 2 * teamSize .. "]")
+							ScriptPrintMessageCenterAll("Waiting for players [Ready: " .. #playersThatVoted .. "/" .. 2 * teamSize .. "]     Use Ping to ready up!")
 						end
 						return 2
 					end,
@@ -369,7 +369,9 @@ end
 
 function PlayerVotes(event)
 	if (roundStarted == false) and votingEnabled == true then
-	
+		
+		local readyNeeded = 2 * teamSize
+		
 		if tableContains(playersThatVoted, event.userid) then
 			removeFromVoted(event.userid)
 			HC_PrintChatAll("{green} players voted: " .. #playersThatVoted)
@@ -378,7 +380,7 @@ function PlayerVotes(event)
 			HC_PrintChatAll("{green} players voted: " .. #playersThatVoted)
 		end
 	
-		if #playersThatVoted == 2 * teamSize then
+		if #playersThatVoted == readyNeeded then
 			StartPug("[Ready]")
 		end
 	end
