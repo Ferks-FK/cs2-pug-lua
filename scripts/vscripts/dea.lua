@@ -57,10 +57,6 @@ function checkWL(event)
     local steamId = tostring(event.networkid)
 	local username = tostring(event.name)
 
-	if tableContains(adminPlayers, steamId) then
-		table.insert(adminIDs, { ["Name"] = event.name, ["UserID"] = event.userid, ["SteamID3"] = event.networkid })
-	end
-
 	if tableContains(allowedPlayers, steamId) or tableContains(adminPlayers, steamId) then
 		print("[Whitelist] " .. username .. " is allowed on this server")
 	else
