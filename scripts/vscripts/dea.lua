@@ -132,6 +132,7 @@ function StartWarmup()
 	SendToServerConsole("bot_kick")
 	
 	SendToServerConsole("mp_warmup_start")
+	SendToServerConsole("mp_limitteams " .. teamSize )
 	
 	if warmupEndless == true then
 		SendToServerConsole("mp_warmup_pausetimer 1")
@@ -154,6 +155,7 @@ Convars:RegisterCommand("rewarmup", function()
 	if tableContains(activeAdmins, user) then
 	
 		SendToServerConsole("mp_warmup_start")
+		SendToServerConsole("mp_limitteams " .. teamSize )
 		
 		if warmupEndless == true then
 			SendToServerConsole("mp_warmup_pausetimer 1")
@@ -184,6 +186,7 @@ end, nil, 0)
 
 Convars:RegisterCommand("startpug", function()
 	local user = Convars:GetCommandClient()
+	print(user)
 	
 	if (roundStarted == false) and tableContains(activeAdmins, user) then
 	
@@ -207,6 +210,7 @@ Convars:RegisterCommand("startpug", function()
 		callback = function()
 			SendToServerConsole("mp_warmup_end")
 			SendToServerConsole("mp_ignore_round_win_conditions 0")
+			SendToServerConsole("mp_limitteams " .. teamSize )
 			HC_PrintChatAll("{green} Starting Pug...")
 			HC_PrintChatAll("{green} Starting Pug...")
 			HC_PrintChatAll("{green} Starting Pug...")
@@ -232,6 +236,7 @@ Convars:RegisterCommand("scramble", function()
 	local user = Convars:GetCommandClient()
 	
 	if tableContains(activeAdmins, user) then
+		SendToServerConsole("mp_limitteams " .. teamSize )
 		SendToServerConsole("mp_scrambleteams")
 		HC_PrintChatAll("{green} Scrambling Teams...")
 		HC_PrintChatAll("{green} Scrambling Teams...")
@@ -287,6 +292,7 @@ Convars:RegisterCommand("restartpug", function()
 		
 		SendToServerConsole("mp_restartgame 1")
 		SendToServerConsole("mp_ignore_round_win_conditions 0")
+		SendToServerConsole("mp_limitteams " .. teamSize )
 		HC_PrintChatAll("{green} Restarting Pug...")
 		HC_PrintChatAll("{green} Restarting Pug...")
 		HC_PrintChatAll("{green} Restarting Pug...")
