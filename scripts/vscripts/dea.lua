@@ -124,11 +124,17 @@ function mvmntSettings(setting)
 	
 end
 
-function StartWarmup()
+function setGeneralSettings()
 	SendToServerConsole("bot_kick")
-	
-	SendToServerConsole("mp_warmup_start")
+	SendToServerConsole("mp_ignore_round_win_conditions 0")
 	SendToServerConsole("mp_limitteams " .. teamSize )
+	SendToServerConsole("mp_team_timeout_max " .. timeoutsPerTeam )
+	SendToServerConsole("mp_team_timeout_time " .. timeoutDuration )
+end
+
+function StartWarmup()
+	SendToServerConsole("mp_warmup_start")
+	setGeneralSettings()
 	
 	if warmupEndless == true then
 		SendToServerConsole("mp_warmup_pausetimer 1")
@@ -151,7 +157,7 @@ Convars:RegisterCommand("rewarmup", function()
 	if tableContains(activeAdmins, user) then
 	
 		SendToServerConsole("mp_warmup_start")
-		SendToServerConsole("mp_limitteams " .. teamSize )
+		setGeneralSettings()
 		
 		if warmupEndless == true then
 			SendToServerConsole("mp_warmup_pausetimer 1")
@@ -203,8 +209,7 @@ function StartPug(reason)
 		endTime = 10, -- when this timer should first execute, you can omit this if you want it to run first on the next frame
 		callback = function()
 			SendToServerConsole("mp_warmup_end")
-			SendToServerConsole("mp_ignore_round_win_conditions 0")
-			SendToServerConsole("mp_limitteams " .. teamSize )
+			setGeneralSettings()
 			HC_PrintChatAll("{green} Starting Pug...")
 			HC_PrintChatAll("{green} Starting Pug...")
 			HC_PrintChatAll("{green} Starting Pug...")
@@ -239,7 +244,7 @@ Convars:RegisterCommand("scramble", function()
 	local user = Convars:GetCommandClient()
 	
 	if tableContains(activeAdmins, user) then
-		SendToServerConsole("mp_limitteams " .. teamSize )
+		setGeneralSettings()
 		SendToServerConsole("mp_scrambleteams")
 		HC_PrintChatAll("{green} Scrambling Teams...")
 		HC_PrintChatAll("{green} Scrambling Teams...")
@@ -294,8 +299,7 @@ Convars:RegisterCommand("restartpug", function()
 		end
 		
 		SendToServerConsole("mp_restartgame 1")
-		SendToServerConsole("mp_ignore_round_win_conditions 0")
-		SendToServerConsole("mp_limitteams " .. teamSize )
+		setGeneralSettings()
 		HC_PrintChatAll("{green} Restarting Pug...")
 		HC_PrintChatAll("{green} Restarting Pug...")
 		HC_PrintChatAll("{green} Restarting Pug...")
@@ -386,6 +390,10 @@ function PlayerVotes(event)
 	end
 end
 
+function OnPlayerDisconnect(event)
+	removeFromVoted(event.userid)
+end
+
 function addAdmin(activeAdmins, admin)
     for _, existingAdmin in ipairs(activeAdmins) do
         if existingAdmin == admin then
@@ -417,6 +425,7 @@ end
 
 ListenToGameEvent("player_spawn", PrintWaitingforPlayers, nil)
 ListenToGameEvent("player_ping", PlayerVotes, nil)
+ListenToGameEvent("player_disconnect", OnPlayerDisconnect, nil)
 
 Whitelist()
 
