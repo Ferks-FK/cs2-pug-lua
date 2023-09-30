@@ -184,18 +184,16 @@ Convars:RegisterCommand("rewarmup", function()
 	end
 end, nil, 0)
 
-Convars:RegisterCommand("startpug", function()
-	local user = Convars:GetCommandClient()
-	print(user)
+function StartPug(reason)
 	
-	if (roundStarted == false) and tableContains(activeAdmins, user) then
+	if (roundStarted == false) then
 	
 		seconds = 10
 		roundStarted = true
 		
 		Timers:CreateTimer("startingpug_timer", {
 						callback = function()
-							HC_PrintChatAll("{green} Starting Pug in: " .. seconds)
+							HC_PrintChatAll("{white}" .. reason .. " {green} Starting Pug in: " .. seconds)
 							seconds = seconds - 1
 							if seconds == 0 then
 								Timers:RemoveTimer(startingpug_timer)
@@ -226,9 +224,18 @@ Convars:RegisterCommand("startpug", function()
 				mvmntSettings("vnl")
 			end
 			
-			HC_PrintChatAll("{green} Movement Settings: [" .. currentMvmntSettings .. "]")
+			HC_PrintChatAll("{white}" .. reason .. "{green} Movement Settings: [" .. currentMvmntSettings .. "]")
 		end
 		})
+	end
+end	
+
+Convars:RegisterCommand("startpug", function()
+	local user = Convars:GetCommandClient()
+	print(user)
+	
+	if (roundStarted == false) and tableContains(activeAdmins, user) then
+		StartPug("[Admin]")
 	end
 end, nil, 0)
 
@@ -334,6 +341,7 @@ Convars:RegisterCommand("changemap", function (_, map)
 	end
 end, nil, 0)
 
+local playersThatVoted = {}
 
 function PrintWaitingforPlayers(event)
 	
@@ -343,8 +351,8 @@ function PrintWaitingforPlayers(event)
 			Timers:CreateTimer("warmup_timer", {
 					callback = function()
 						if not roundStarted then		
-							HC_PrintChatAll("{green} Waiting for players")
-							ScriptPrintMessageCenterAll("[DEAFPS PUG] Waiting for players")
+							HC_PrintChatAll("{green} Waiting for players {lightgray}[Players ready: " .. #playersThatVoted .. "/" .. teamSize .. "]")
+							ScriptPrintMessageCenterAll("Waiting for players [Ready: " .. #playersThatVoted .. "/" .. teamSize .. "]     Use Ping to ready up!")
 						end
 						return 2
 					end,
@@ -352,6 +360,32 @@ function PrintWaitingforPlayers(event)
 		end
 	end
 	
+end
+
+function removeFromVoted(userid)
+    for index, id in ipairs(playersThatVoted) do
+        if id == userid then
+            table.remove(playersThatVoted, index)
+            return
+        end
+    end
+end
+
+function PlayerVotes(event)
+	if (roundStarted == false) and votingEnabled == true then
+	
+		if tableContains(playersThatVoted, event.userid) then
+			removeFromVoted(event.userid)
+			HC_PrintChatAll("{green} players voted: " .. #playersThatVoted)
+		elseif not tableContains(playersThatVoted, event.userid) then
+			table.insert(playersThatVoted, event.userid)
+			HC_PrintChatAll("{green} players voted: " .. #playersThatVoted)
+		end
+	
+		if #playersThatVoted == 2 * teamSize then
+			StartPug("[Ready]")
+		end
+	end
 end
 
 function addAdmin(activeAdmins, admin)
@@ -384,6 +418,7 @@ function Whitelist()
 end
 
 ListenToGameEvent("player_spawn", PrintWaitingforPlayers, nil)
+ListenToGameEvent("player_ping", PlayerVotes, nil)
 
 Whitelist()
 
