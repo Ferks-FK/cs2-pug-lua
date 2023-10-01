@@ -61,7 +61,7 @@ function checkWL(event)
 		print("[Whitelist] " .. username .. " is allowed on this server")
 	else
 		print("[Whitelist] " .. username .. " not on whitelist, kicking...")
-		SendToServerConsole("kickid " .. event.userid .. " You have been kicked from this server!")
+		SendToServerConsole("kickid " .. event.userid .. " You are not on the whitelist!")
 	end  
 end
 
@@ -206,7 +206,7 @@ function StartPug(reason)
 		
 		Timers:CreateTimer({
 		useGameTime = false,
-		endTime = 10, -- when this timer should first execute, you can omit this if you want it to run first on the next frame
+		endTime = 10,
 		callback = function()
 			SendToServerConsole("mp_warmup_end")
 			setGeneralSettings()
@@ -332,7 +332,7 @@ Convars:RegisterCommand("changemap", function (_, map)
 		
 		Timers:CreateTimer({
 		useGameTime = false,
-		endTime = 10, -- when this timer should first execute, you can omit this if you want it to run first on the next frame
+		endTime = 10,
 		callback = function()
 			SendToServerConsole("map " .. mmap)
 			
@@ -340,6 +340,16 @@ Convars:RegisterCommand("changemap", function (_, map)
 		})
 	end
 end, nil, 0)
+
+Convars:RegisterCommand( "kickid" , function (_, id)
+        local userid = tostring (id)
+        local user = Convars:GetCommandClient()
+	
+	if tableContains(activeAdmins, user) then
+		SendToServerConsole("kickid " .. userid .. " kicked by server admin")
+		print(userid .. " kicked from the server")
+	end
+end, nil , FCVAR_PROTECTED)
 
 local playersThatVoted = {}
 
