@@ -3,6 +3,7 @@
 
 require "libs.timers"
 require "whitelist"
+require "banlist"
 require "pug_cfg"
 
 roundStarted = false
@@ -16,7 +17,7 @@ local adminPlayers = {
 	"[U:1:166331469]", --kuba
 	"[U:1:55900622]", --tamas
 }
-
+local connectedPlayers = {}
 local activeAdmins = {}
 
 function HC_ReplaceColorCodes(text)
@@ -52,9 +53,18 @@ function tableContains(table, value)
     return false
 end
 
+function checkBanlist(event)
+	local steamId = tostring(event.networkid)
+	local username = tostring(event.name)
+	
+	if tableContains(bannedPlayers, steamId) then
+		print("[Banlist] " .. username .. " isnt allowed on this server")
+		SendToServerConsole("kickid " .. event.userid .. " You have been banned!")
+	end
+end
 
 function checkWL(event)
-    local steamId = tostring(event.networkid)
+	local steamId = tostring(event.networkid)
 	local username = tostring(event.name)
 
 	if tableContains(allowedPlayers, steamId) or tableContains(adminPlayers, steamId) then
@@ -130,6 +140,10 @@ function setGeneralSettings()
 	SendToServerConsole("mp_limitteams " .. teamSize )
 	SendToServerConsole("mp_team_timeout_max " .. timeoutsPerTeam )
 	SendToServerConsole("mp_team_timeout_time " .. timeoutDuration )
+	
+	if useCustomCFG == true then
+		SendToServerConsole("exec " .. customCFG )
+	end
 end
 
 function StartWarmup()
@@ -311,6 +325,12 @@ Convars:RegisterCommand("restartpug", function()
 	end
 end, nil, 0)
 
+function KickAllPlayers()
+    for userid, _ in pairs(connectedPlayers) do
+        SendToServerConsole("kickid " .. userid .. " server is changing map, please reconnect")
+    end
+end
+
 Convars:RegisterCommand("changemap", function (_, map)
 	local mmap = tostring (map) or  30
 	local user = Convars:GetCommandClient()
@@ -334,8 +354,17 @@ Convars:RegisterCommand("changemap", function (_, map)
 		useGameTime = false,
 		endTime = 10,
 		callback = function()
+			KickAllPlayers()
+				
+		end
+		})
+		
+		Timers:CreateTimer({
+		useGameTime = false,
+		endTime = 11,
+		callback = function()
 			SendToServerConsole("map " .. mmap)
-			
+				
 		end
 		})
 	end
@@ -351,6 +380,14 @@ Convars:RegisterCommand( "pugkick" , function (_, id)
 	end
 end, nil , FCVAR_PROTECTED)
 
+Convars:RegisterCommand( "pugkickall" , function ()
+    local user = Convars:GetCommandClient()
+	
+	if tableContains(activeAdmins, user) then
+		KickAllPlayers()
+	end
+end, nil , FCVAR_PROTECTED)
+
 local playersThatVoted = {}
 
 function PrintWaitingforPlayers(event)
@@ -362,7 +399,11 @@ function PrintWaitingforPlayers(event)
 					callback = function()
 						if not roundStarted then		
 							HC_PrintChatAll("{green} Waiting for players {lightgray}[Players ready: " .. #playersThatVoted .. "/" .. 2 * teamSize .. "]")
-							ScriptPrintMessageCenterAll("Waiting for players [Ready: " .. #playersThatVoted .. "/" .. 2 * teamSize .. "]     Use Ping to ready up!")
+							if votingEnabled then
+								ScriptPrintMessageCenterAll("Waiting for players [Ready: " .. #playersThatVoted .. "/" .. 2 * teamSize .. "]     Use Ping to ready up!")
+							else
+								ScriptPrintMessageCenterAll("Waiting for Admin to start the pug!")
+							end
 						end
 						return 2
 					end,
@@ -381,6 +422,15 @@ function removeFromVoted(userid)
     end
 end
 
+function GetPlayerName(userid)
+    local playerData = connectedPlayers[userid]
+    if playerData then
+        return playerData.name
+    else
+        return "unknown"
+    end
+end
+
 function PlayerVotes(event)
 	if (roundStarted == false) and votingEnabled == true then
 		
@@ -388,20 +438,16 @@ function PlayerVotes(event)
 		
 		if tableContains(playersThatVoted, event.userid) then
 			removeFromVoted(event.userid)
-			HC_PrintChatAll("{green} players voted: " .. #playersThatVoted)
+			HC_PrintChatAll( " {lightgray}" .. tostring(GetPlayerName(event.userid)) .. " is ready! {green} Players voted: " .. #playersThatVoted)
 		elseif not tableContains(playersThatVoted, event.userid) then
 			table.insert(playersThatVoted, event.userid)
-			HC_PrintChatAll("{green} players voted: " .. #playersThatVoted)
+			HC_PrintChatAll( " {lightgray}" .. tostring(GetPlayerName(event.userid)) .. " is not ready! {green} Players voted: " .. #playersThatVoted)
 		end
 	
 		if #playersThatVoted == readyNeeded then
 			StartPug("[Ready]")
 		end
 	end
-end
-
-function OnPlayerDisconnect(event)
-	removeFromVoted(event.userid)
 end
 
 function addAdmin(activeAdmins, admin)
@@ -425,18 +471,34 @@ Convars:RegisterCommand( "adminlogin" , function (_, pw)
 	end
 end, nil , FCVAR_PROTECTED)
 
-StartWarmup()
-
-function Whitelist()
-	if enableWhitelist then
-		ListenToGameEvent("player_connect", checkWL, nil)
+function OnPlayerConnect(event)
+	if enableWhitelist == true then
+		checkWL(event)
 	end
+	
+	if enableWhitelist == false then
+		checkBanlist(event)
+	end
+	
+	local playerData = {
+		name = event.name,
+		userid = event.userid,
+		networkid = event.networkid,
+		address = event.address
+	}
+	connectedPlayers[event.userid] = playerData
 end
 
+function OnPlayerDisconnect(event)
+	removeFromVoted(event.userid)
+	connectedPlayers[event.userid] = nil
+end
+
+StartWarmup()
+
+ListenToGameEvent("player_connect", OnPlayerConnect, nil)
 ListenToGameEvent("player_spawn", PrintWaitingforPlayers, nil)
 ListenToGameEvent("player_ping", PlayerVotes, nil)
 ListenToGameEvent("player_disconnect", OnPlayerDisconnect, nil)
-
-Whitelist()
 
 print("[DEAFPS PUG] Plugin loaded!")
