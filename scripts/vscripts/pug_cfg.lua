@@ -14,7 +14,7 @@ timeoutsPerTeam = 3                     --amount of timeout votes allowed per te
 timeoutDuration = 30                    --timeout duration
 
 
-useCustomCFG = false 					          -- if a custom cfg should be used
+useCustomCFG = false 			-- if a custom cfg should be used
 
 customCFG = "crazywhackysettings.cfg" 	-- place your custom cfg into the cfg folder and put name here.
-										                    -- make sure to not use mp_restartgame since that is being handled by the plugin already
+					-- make sure to not use mp_restartgame since that is being handled by the plugin already
