@@ -341,7 +341,7 @@ Convars:RegisterCommand("changemap", function (_, map)
 	end
 end, nil, 0)
 
-Convars:RegisterCommand( "kickid" , function (_, id)
+Convars:RegisterCommand( "pugkick" , function (_, id)
         local userid = tostring (id)
         local user = Convars:GetCommandClient()
 	
