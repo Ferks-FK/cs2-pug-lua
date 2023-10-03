@@ -363,7 +363,7 @@ Convars:RegisterCommand("changemap", function (_, map)
 				
 		Timers:CreateTimer({
 		useGameTime = false,
-		endTime = 11,
+		endTime = 15,
 		callback = function()
 			SendToServerConsole("map " .. mmap)
 				
