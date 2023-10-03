@@ -349,16 +349,18 @@ Convars:RegisterCommand("changemap", function (_, map)
 							return 1.0
 						end,
 		})
-		
-		Timers:CreateTimer({
-		useGameTime = false,
-		endTime = 10,
-		callback = function()
-			KickAllPlayers()
-				
+
+		if autokickOnMapChange == true then
+			Timers:CreateTimer({
+			useGameTime = false,
+			endTime = 10,
+			callback = function()
+				KickAllPlayers()
+					
+			end
+			})
 		end
-		})
-		
+				
 		Timers:CreateTimer({
 		useGameTime = false,
 		endTime = 11,
