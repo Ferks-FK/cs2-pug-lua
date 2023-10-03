@@ -440,10 +440,14 @@ function PlayerVotes(event)
 		
 		if tableContains(playersThatVoted, event.userid) then
 			removeFromVoted(event.userid)
-			HC_PrintChatAll( " {lightgray}" .. tostring(GetPlayerName(event.userid)) .. " is ready! {green} Players voted: " .. #playersThatVoted)
+			if autokickOnMapChange == true then
+				HC_PrintChatAll( " {lightgray}" .. tostring(GetPlayerName(event.userid)) .. " is ready! {green} Players voted: " .. #playersThatVoted)
+			end
 		elseif not tableContains(playersThatVoted, event.userid) then
 			table.insert(playersThatVoted, event.userid)
-			HC_PrintChatAll( " {lightgray}" .. tostring(GetPlayerName(event.userid)) .. " is not ready! {green} Players voted: " .. #playersThatVoted)
+			if autokickOnMapChange == true then
+				HC_PrintChatAll( " {lightgray}" .. tostring(GetPlayerName(event.userid)) .. " is not ready! {green} Players voted: " .. #playersThatVoted)
+			end
 		end
 	
 		if #playersThatVoted == readyNeeded then
