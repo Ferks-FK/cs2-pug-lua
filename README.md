@@ -1,6 +1,6 @@
 # A Counter-Strike: 2 Server Pug plugin written in LUA
 
-Install the Pug plugin hassle-free with [voxbyte.io](https://voxbyte.io/en) - your one-click solution for effortless Counter-Strike 2 server hosting
+Install the Pug plugin hassle-free with [voxbyte.io](https://vbl.ink/voxbyteshort) - your one-click solution for effortless Counter-Strike 2 server hosting
 
 ## Admin Commands
 
