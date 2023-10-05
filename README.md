@@ -18,11 +18,11 @@ Install the Pug plugin hassle-free with [voxbyte.io](https://vbl.ink/voxbyteshor
 
 ### Dependencies
 
-This plugin requires the unlocked LUA VScript.dll on windows or the unlocked libvscript.so on Linux
-
-Lua Patcher (use if you are not using MetaMod): https://github.com/bklol/vscriptPatch
+This plugin requires unlocking LUA VScript!
 
 Lua Unlocker MetaMod Plugin: https://github.com/Source2ZE/LuaUnlocker
+
+Lua Patcher (use if you are not using MetaMod, and make sure your server runs -insecure): https://github.com/bklol/vscriptPatch
 
 ### Installing
 
