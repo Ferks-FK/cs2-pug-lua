@@ -1,6 +1,7 @@
 chatPrefix = "{red} [DEAFPS PUG] "      --appears before every plugin related chat msg
 warmupEndless = true
 warmupTime = "234124235"                --default is infinite
+waitingForPlayerMsgInterval = 2		--how long the delay in seconds should be between sending "waiting for players" chat msgs
 
 adminPassword = "123"                   --change this to your desired admin pw
 
