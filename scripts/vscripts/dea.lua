@@ -392,6 +392,8 @@ end, nil , FCVAR_PROTECTED)
 
 local playersThatVoted = {}
 
+wfpDelay = 0
+
 function PrintWaitingforPlayers(event)
 	
 	if not warmupTimerStarted then
@@ -400,14 +402,21 @@ function PrintWaitingforPlayers(event)
 			Timers:CreateTimer("warmup_timer", {
 					callback = function()
 						if not roundStarted then		
-							HC_PrintChatAll("{green} Waiting for players {lightgray}[Players ready: " .. #playersThatVoted .. "/" .. 2 * teamSize .. "]")
+							
+							if wfpDelay == waitingForPlayerMsgInterval then
+								HC_PrintChatAll("{green} Waiting for players {lightgray}[Players ready: " .. #playersThatVoted .. "/" .. 2 * teamSize .. "]")
+								wfpDelay = 0
+							else
+								wfpDelay = wfpDelay + 1
+							end
+								
 							if votingEnabled then
 								ScriptPrintMessageCenterAll("Waiting for players [Ready: " .. #playersThatVoted .. "/" .. 2 * teamSize .. "]     Use Ping to ready up!")
 							else
 								ScriptPrintMessageCenterAll("Waiting for Admin to start the pug!")
 							end
 						end
-						return waitingForPlayerMsgInterval
+						return 1
 					end,
 			})
 		end
