@@ -407,7 +407,7 @@ function PrintWaitingforPlayers(event)
 								ScriptPrintMessageCenterAll("Waiting for Admin to start the pug!")
 							end
 						end
-						return 2
+						return waitingForPlayerMsgInterval
 					end,
 			})
 		end
